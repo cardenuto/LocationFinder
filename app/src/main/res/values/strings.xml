@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">LocationFinder</string>
+    <string name="title_location_detail">Location Detail</string>
+    <string name="title_add_location">New Location</string>
+</resources>
