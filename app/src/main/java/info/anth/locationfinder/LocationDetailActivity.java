@@ -26,14 +26,7 @@ public class LocationDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        final LocationDetailFragment fragment;
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -56,12 +49,24 @@ public class LocationDetailActivity extends AppCompatActivity {
             Bundle arguments = new Bundle();
             arguments.putString(LocationDetailFragment.ARG_ITEM_ID,
                     getIntent().getStringExtra(LocationDetailFragment.ARG_ITEM_ID));
-            LocationDetailFragment fragment = new LocationDetailFragment();
+            fragment = new LocationDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.location_detail_container, fragment)
                     .commit();
+        } else {
+            return;
         }
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                fragment.mapLocation(view);
+            }
+        });
     }
 
     @Override

@@ -3,6 +3,7 @@ package info.anth.locationfinder;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import java.util.ArrayList;
@@ -97,6 +98,14 @@ public class LocationContent {
         @Override
         public String toString() {
             return location_name + " Long: " + String.valueOf(longitude) + " Lat: " + String.valueOf(latitude);
+        }
+
+        public Uri geoUri() {
+            String uriBegin = "geo:" + String.valueOf(latitude) + "," + String.valueOf(longitude);
+            String query = String.valueOf(latitude) + "," + String.valueOf(longitude) + "(" + location_name + ")";
+            String encodedQuery = Uri.encode(query);
+            String uriString = uriBegin + "?q=" + encodedQuery + "&z=23";
+            return Uri.parse(uriString);
         }
     }
 

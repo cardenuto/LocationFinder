@@ -59,12 +59,14 @@ tools:ignore="MergeRootFrame">
         android:layout_height="wrap_content"
         android:orientation="vertical">
     <EditText
+        android:id="@+id/location_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Name"
         android:layout_margin="25dp"
         />
     <EditText
+        android:id="@+id/latitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Latitude"
@@ -72,6 +74,7 @@ tools:ignore="MergeRootFrame">
         android:focusable="false"
         />
     <EditText
+        android:id="@+id/longitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Longitude"
