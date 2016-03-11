@@ -54,6 +54,13 @@ public class AddLocation extends AppCompatActivity implements GoogleApiClient.Co
     private static int countInRow = 3;
     private static int currentCount = 0;
 
+    private static int maxChecks = 5;
+    private static int currentCheck = 0;
+
+    private static float bestAccuracy = 1000;
+    private static double bestLongitude = 0;
+    private static double bestLatitude = 0;
+
     DBHelper locationDb;
 
     @Override
@@ -129,27 +136,48 @@ public class AddLocation extends AppCompatActivity implements GoogleApiClient.Co
     public void onLocationChanged(Location location) {
         Log.i("MainActivity", "onLocationChanged count: " + currentCount + " Accuracy: " + String.valueOf(location.getAccuracy()));
 
+        currentCheck++;
+        if(bestAccuracy >= location.getAccuracy()) {
+            bestAccuracy = location.getAccuracy();
+            bestLatitude = location.getLatitude();
+            bestLongitude = location.getLongitude();
+        }
+
         if (lastLatitude == location.getLatitude() && lastLongitude == location.getLongitude()) {
             currentCount++;
-            if (countInRow == currentCount) {
-                stopLocationUpdates();
-                //set longitude and latitude
-                TextView longitudeTextView = (TextView) findViewById(R.id.longitude);
-                longitudeTextView.setText(String.valueOf(lastLongitude));
-                TextView latitudeTextView = (TextView) findViewById(R.id.latitude);
-                latitudeTextView.setText(String.valueOf(lastLatitude));
-                EditText name = (EditText) findViewById(R.id.location_name);
-
-                locationDb = new DBHelper(this);
-                locationDb.insertLocation(name.getText().toString(), lastLongitude, lastLatitude, "Accuracy: " + String.valueOf(location.getAccuracy()));
-
-                Toast toast = Toast.makeText(this, "Saved", Toast.LENGTH_LONG);
-                toast.show();
-            }
         } else {
             lastLatitude = location.getLatitude();
             lastLongitude = location.getLongitude();
             currentCount = 0;
+        }
+        if (countInRow == currentCount) {
+            stopLocationUpdates();
+            //set longitude and latitude
+            TextView longitudeTextView = (TextView) findViewById(R.id.longitude);
+            longitudeTextView.setText(String.valueOf(lastLongitude));
+            TextView latitudeTextView = (TextView) findViewById(R.id.latitude);
+            latitudeTextView.setText(String.valueOf(lastLatitude));
+            EditText name = (EditText) findViewById(R.id.location_name);
+
+            locationDb = new DBHelper(this);
+            locationDb.insertLocation(name.getText().toString(), lastLongitude, lastLatitude, "Consistency Saved \nAccuracy: " + String.valueOf(location.getAccuracy()));
+
+            Toast toast = Toast.makeText(this, "Saved", Toast.LENGTH_LONG);
+            toast.show();
+        } else if (currentCheck >= maxChecks && currentCount == 0) {
+            stopLocationUpdates();
+            //set longitude and latitude
+            TextView longitudeTextView = (TextView) findViewById(R.id.longitude);
+            longitudeTextView.setText(String.valueOf(bestLongitude));
+            TextView latitudeTextView = (TextView) findViewById(R.id.latitude);
+            latitudeTextView.setText(String.valueOf(bestLatitude));
+            EditText name = (EditText) findViewById(R.id.location_name);
+
+            locationDb = new DBHelper(this);
+            locationDb.insertLocation(name.getText().toString(), lastLongitude, lastLatitude, "Accuracy Saved \nAccuracy: " + String.valueOf(bestAccuracy));
+
+            Toast toast = Toast.makeText(this, "Saved", Toast.LENGTH_LONG);
+            toast.show();
         }
     }
 
